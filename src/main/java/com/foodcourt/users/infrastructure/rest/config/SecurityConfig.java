@@ -22,7 +22,6 @@ public class SecurityConfig {
 			.cors(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(auth -> auth
 				.anyRequest().permitAll())
-//			.formLogin().disable()
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 			
 		return http.build();

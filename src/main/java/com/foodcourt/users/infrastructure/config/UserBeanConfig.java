@@ -1,4 +1,4 @@
-package com.foodcourt.users.infrastructure.adapters.config;
+package com.foodcourt.users.infrastructure.config;
 
 import com.foodcourt.users.domain.gateways.EncryptService;
 import com.foodcourt.users.domain.gateways.UserRepositoryGateway;

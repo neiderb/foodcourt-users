@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.7'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
 }
 
 group = 'com.foodcourt'
@@ -33,6 +34,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-database-postgresql:11.15.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
 
     runtimeOnly 'org.postgresql:postgresql'
 
@@ -50,4 +53,27 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('jacocoTestReport') {
+    dependsOn tasks.test
+}
+
+jacocoTestReport {
+    sourceSets sourceSets.main
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/foodcourt/users/MsUsersApplication.class',
+                    '**/mappers/*Impl.class',
+                    'com/foodcourt/users/infrastructure/config/**',
+                    'com/foodcourt/users/infrastructure/adapters/passwordencoder/config/**',
+                    'com/foodcourt/users/infrastructure/adapters/persistence/config/**',
+                    'com/foodcourt/users/infrastructure/rest/config/**',
+                    'com/foodcourt/users/infrastructure/rest/docapi/**',
+                    '**/*$*.*',
+            ])
+        }))
+    }
 }

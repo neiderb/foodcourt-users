@@ -1,4 +1,4 @@
-package com.foodcourt.users.infrastructure.adapters.mappers;
+package com.foodcourt.users.infrastructure.adapters.persistence.mappers;
 
 import com.foodcourt.users.domain.model.User;
 import com.foodcourt.users.infrastructure.adapters.persistence.UserData;

@@ -4,7 +4,7 @@ import com.foodcourt.users.domain.exception.TechnicalException;
 import com.foodcourt.users.domain.gateways.UserRepositoryGateway;
 import com.foodcourt.users.domain.model.User;
 import com.foodcourt.users.domain.model.UserRole;
-import com.foodcourt.users.infrastructure.adapters.mappers.UserMapper;
+import com.foodcourt.users.infrastructure.adapters.persistence.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import static java.util.Objects.isNull;
 
 @Repository
 @RequiredArgsConstructor
-public class UserAdapter implements UserRepositoryGateway {
+public class UserRepositoryAdapter implements UserRepositoryGateway {
 	
 	private final UserJpaRepository userRepository;
 	private final RoleJpaRepository roleRepository;
