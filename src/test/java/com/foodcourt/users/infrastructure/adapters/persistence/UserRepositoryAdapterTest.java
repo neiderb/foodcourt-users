@@ -3,6 +3,8 @@ package com.foodcourt.users.infrastructure.adapters.persistence;
 import com.foodcourt.users.domain.exception.TechnicalException;
 import com.foodcourt.users.domain.model.User;
 import com.foodcourt.users.domain.model.UserRole;
+import com.foodcourt.users.infrastructure.adapters.persistence.entities.RoleData;
+import com.foodcourt.users.infrastructure.adapters.persistence.entities.UserData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

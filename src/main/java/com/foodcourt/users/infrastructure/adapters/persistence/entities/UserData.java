@@ -1,4 +1,4 @@
-package com.foodcourt.users.infrastructure.adapters.persistence;
+package com.foodcourt.users.infrastructure.adapters.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

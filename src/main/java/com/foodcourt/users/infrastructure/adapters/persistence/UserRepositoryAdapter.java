@@ -4,6 +4,8 @@ import com.foodcourt.users.domain.exception.TechnicalException;
 import com.foodcourt.users.domain.gateways.UserRepositoryGateway;
 import com.foodcourt.users.domain.model.User;
 import com.foodcourt.users.domain.model.UserRole;
+import com.foodcourt.users.infrastructure.adapters.persistence.entities.RoleData;
+import com.foodcourt.users.infrastructure.adapters.persistence.entities.UserData;
 import com.foodcourt.users.infrastructure.adapters.persistence.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

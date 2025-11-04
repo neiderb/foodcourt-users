@@ -1,7 +1,7 @@
 package com.foodcourt.users.infrastructure.adapters.persistence.mappers;
 
 import com.foodcourt.users.domain.model.User;
-import com.foodcourt.users.infrastructure.adapters.persistence.UserData;
+import com.foodcourt.users.infrastructure.adapters.persistence.entities.UserData;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
