@@ -1,4 +1,4 @@
-package com.foodcourt.users.infrastructure.adapters;
+package com.foodcourt.users.infrastructure.adapters.persistence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
