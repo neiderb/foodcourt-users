@@ -7,6 +7,7 @@ import com.foodcourt.users.application.mappers.UserRequestMapper;
 import com.foodcourt.users.domain.model.User;
 import com.foodcourt.users.domain.model.UserRole;
 import com.foodcourt.users.domain.ports.CreateUserPort;
+import com.foodcourt.users.domain.ports.GetUserByIdPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserHandlerImpl implements UserHandler {
 	
 	private final CreateUserPort createUserPort;
+	private final GetUserByIdPort getUserByIdPort;
 	
 	@Override
 	public UserResponse createUser(UserRequest userRequest) {
@@ -26,8 +28,18 @@ public class UserHandlerImpl implements UserHandler {
 		return new UserResponse(
 			userSaved.getId(),
 			userSaved.getEmail(),
-			userRequest.role()
+			userRequest.role().toLowerCase()
 		);
 	}
 	
+	@Override
+	public UserResponse getUserById(Long id) {
+		User user = getUserByIdPort.execute(id);
+		
+		return new UserResponse(
+			user.getId(),
+			user.getEmail(),
+			user.getRole().name().toLowerCase()
+		);
+	}
 }

@@ -4,7 +4,9 @@ import com.foodcourt.users.application.dto.request.UserRequest;
 import com.foodcourt.users.application.dto.response.UserResponse;
 import com.foodcourt.users.domain.exception.InvalidRoleException;
 import com.foodcourt.users.domain.model.User;
+import com.foodcourt.users.domain.model.UserRole;
 import com.foodcourt.users.domain.ports.CreateUserPort;
+import com.foodcourt.users.domain.ports.GetUserByIdPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +27,9 @@ class UserHandlerImplTest {
 	
 	@Mock
 	private CreateUserPort createUserPort;
+	
+	@Mock
+	private GetUserByIdPort getUserByIdPort;
 	
 	private static final Long USER_ID = 1L;
 	private static final String USER_NAME = "John";
@@ -69,6 +74,31 @@ class UserHandlerImplTest {
 		);
 		
 		assertThrows(InvalidRoleException.class, () -> userHandlerImpl.createUser(userRequest));
+	}
+	
+	@Test
+	void shouldReturnUserOnGetById() {
+		final Long userId = USER_ID;
+		final User testUser = User.builder()
+			.id(userId)
+			.name(USER_NAME)
+			.lastname(USER_LASTNAME)
+			.documentNumber(USER_DOCUMENT_NUMBER)
+			.phoneNumber(USER_PHONE_NUMBER)
+			.birthdate(USER_BIRTHDATE)
+			.email(USER_EMAIL)
+			.password(USER_PASSWORD)
+			.role(UserRole.OWNER)
+			.build();
+		
+		when(getUserByIdPort.execute(userId)).thenReturn(testUser);
+		
+		UserResponse userResponse = userHandlerImpl.getUserById(userId);
+		
+		assertNotNull(userResponse);
+		assertEquals(USER_ID, userResponse.id());
+		assertEquals(USER_EMAIL, userResponse.email());
+		assertEquals(USER_ROLE, userResponse.role());
 	}
 	
 	private UserRequest validUserRequest() {

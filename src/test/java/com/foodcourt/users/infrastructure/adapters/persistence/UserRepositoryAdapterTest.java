@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static com.foodcourt.users.domain.constants.UserConstants.LEGAL_AGE;
 import static org.junit.jupiter.api.Assertions.*;
@@ -136,6 +137,36 @@ class UserRepositoryAdapterTest {
 		when(userJpaRepository.findByEmail(USER_EMAIL)).thenReturn(null);
 		
 		User foundUser = userRepositoryAdapter.findByEmail(USER_EMAIL);
+		
+		assertNull(foundUser);
+	}
+	
+	@Test
+	void shouldReturnUserWhenFindByIdExists() {
+		RoleData roleData = validRoleOwnerData();
+		UserData testUserData = validUserData();
+		testUserData.setRole(roleData);
+		
+		when(userJpaRepository.findById(1L)).thenReturn(Optional.of(testUserData));
+		
+		User foundUser = userRepositoryAdapter.findById(1L);
+		
+		assertNotNull(foundUser);
+		assertEquals(USER_NAME, foundUser.getName());
+		assertEquals(USER_LASTNAME, foundUser.getLastname());
+		assertEquals(USER_DOCUMENT_NUMBER, foundUser.getDocumentNumber());
+		assertEquals(USER_PHONE_NUMBER, foundUser.getPhoneNumber());
+		assertEquals(USER_BIRTHDATE, foundUser.getBirthdate());
+		assertEquals(USER_EMAIL, foundUser.getEmail());
+		assertEquals(USER_PASSWORD, foundUser.getPassword());
+		assertEquals(USER_ROLE, foundUser.getRole());
+	}
+	
+	@Test
+	void shouldReturnNullWhenFindByIdNotExists() {
+		when(userJpaRepository.findById(1L)).thenReturn(Optional.empty());
+		
+		User foundUser = userRepositoryAdapter.findById(1L);
 		
 		assertNull(foundUser);
 	}

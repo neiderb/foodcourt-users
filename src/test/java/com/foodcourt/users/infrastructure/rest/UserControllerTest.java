@@ -3,6 +3,7 @@ package com.foodcourt.users.infrastructure.rest;
 import com.foodcourt.users.application.dto.request.UserRequest;
 import com.foodcourt.users.application.dto.response.UserResponse;
 import com.foodcourt.users.application.handler.UserHandler;
+import com.foodcourt.users.domain.exception.UserNotFoundException;
 import com.foodcourt.users.infrastructure.rest.config.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.MediaType;
@@ -14,8 +15,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.foodcourt.users.infrastructure.rest.constants.paths.UserPath.BASE;
+import static com.foodcourt.users.infrastructure.rest.constants.paths.UserPath.FIND_BY_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +62,7 @@ class UserControllerTest {
 		mockMvc.perform(post(BASE)
 			.contentType(MediaType.APPLICATION_JSON.toString())
 			.content(jsonBody))
-			.andExpect(status().isOk())
+			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").value(mockResponse.id()))
 			.andExpect(jsonPath("$.email").value(mockResponse.email()))
 			.andExpect(jsonPath("$.role").value(mockResponse.role()));
@@ -87,4 +90,31 @@ class UserControllerTest {
 			.andExpect(status().isBadRequest());
 	}
 	
+	@Test
+	void shouldReturnUserWhenGetById() throws Exception {
+		final Long userId = 1L;
+		UserResponse mockResponse = new UserResponse(
+			userId,
+			"mock.mail@mail.com",
+			"owner"
+		);
+		
+		when(userHandler.getUserById(userId)).thenReturn(mockResponse);
+		
+		mockMvc.perform(get(BASE.concat(FIND_BY_ID), userId))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id").value(mockResponse.id()))
+			.andExpect(jsonPath("$.email").value(mockResponse.email()))
+			.andExpect(jsonPath("$.role").value(mockResponse.role()));
+	}
+	
+	@Test
+	void shouldReturnNotFoundWhenGetByIdWithNonexistentUser() throws Exception {
+		final Long userId = 999L;
+		
+		when(userHandler.getUserById(userId)).thenThrow(new UserNotFoundException("User not found"));
+		
+		mockMvc.perform(get(BASE.concat(FIND_BY_ID), userId))
+			.andExpect(status().isBadRequest());
+	}
 }

@@ -7,4 +7,6 @@ public interface UserHandler {
 	
 	UserResponse createUser(UserRequest userRequest);
 	
+	UserResponse getUserById(Long id);
+	
 }

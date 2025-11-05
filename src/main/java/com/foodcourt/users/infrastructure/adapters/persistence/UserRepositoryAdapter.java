@@ -37,6 +37,11 @@ public class UserRepositoryAdapter implements UserRepositoryGateway {
 		return mapDataToUser(userRepository.findByEmail(email));
 	}
 	
+	@Override
+	public User findById(Long id) {
+		return userRepository.findById(id).map(this::mapDataToUser).orElse(null);
+	}
+	
 	private UserData mapUserToData(User user) {
 		UserData userData = UserMapper.INSTANCE.toData(user);
 		RoleData roleData = roleRepository.findByName(user.getRole().name());
