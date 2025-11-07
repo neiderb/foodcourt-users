@@ -33,11 +33,23 @@ public class SecurityConfig {
 	private final JwtFilter jwtFilter;
 	private final ObjectMapper objectMapper;
 	
+	private static final String[] ALLOWED_PATHS_SWAGGER = {
+		"/v3/api-docs/**",
+		"/swagger-ui.html",
+		"/swagger-ui/**",
+		"/webjars/**"
+	};
+	private static final String[] ALLOWED_PATHS_ACTUATOR = {
+		"/actuator/health",
+	};
+	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
 			.cors(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(auth -> auth
+				.requestMatchers(ALLOWED_PATHS_SWAGGER).permitAll()
+				.requestMatchers(ALLOWED_PATHS_ACTUATOR).permitAll()
 				.requestMatchers(AuthPath.BASE.concat(AuthPath.LOGIN)).permitAll()
 				.requestMatchers(POST, UserPath.BASE).permitAll()
 				.anyRequest().authenticated())
