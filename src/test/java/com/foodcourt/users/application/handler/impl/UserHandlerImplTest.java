@@ -4,6 +4,7 @@ import com.foodcourt.users.application.dto.request.UserRequest;
 import com.foodcourt.users.application.dto.response.UserResponse;
 import com.foodcourt.users.domain.exception.InvalidRoleException;
 import com.foodcourt.users.domain.model.User;
+import com.foodcourt.users.domain.model.UserClaims;
 import com.foodcourt.users.domain.model.UserRole;
 import com.foodcourt.users.domain.ports.CreateUserPort;
 import com.foodcourt.users.domain.ports.GetUserByIdPort;
@@ -12,11 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,9 +45,10 @@ class UserHandlerImplTest {
 	private static final String USER_EMAIL = "john.doe@mail.com";
 	private static final String USER_PASSWORD = "pass123";
 	private static final String USER_ROLE = "owner";
-	
+
 	@Test
 	void shouldCreateUserOwnerSuccessfully() {
+		initSecurityContext();
 		UserRequest userRequest = validUserRequest();
 		UserResponse expectedResponse = validUserResponse();
 		
@@ -120,5 +126,20 @@ class UserHandlerImplTest {
 			USER_EMAIL,
 			USER_ROLE
 		);
+	}
+	
+	private void initSecurityContext() {
+		UserClaims userClaims = new UserClaims(
+			USER_ID,
+			USER_EMAIL,
+			UserRole.OWNER
+		);
+		Authentication authentication = mock(Authentication.class);
+		when(authentication.getPrincipal()).thenReturn(userClaims);
+		
+		SecurityContext securityContext = mock(SecurityContext.class);
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		
+		SecurityContextHolder.setContext(securityContext);
 	}
 }

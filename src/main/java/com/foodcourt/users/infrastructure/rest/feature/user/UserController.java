@@ -1,4 +1,4 @@
-package com.foodcourt.users.infrastructure.rest;
+package com.foodcourt.users.infrastructure.rest.feature.user;
 
 import com.foodcourt.users.application.dto.request.UserRequest;
 import com.foodcourt.users.application.dto.response.UserResponse;

@@ -44,7 +44,6 @@ public class CreateUserUseCase implements CreateUserPort {
 			// Clients can only create themselves
 			(isNull(roleCreator) && !CLIENT.equals(newUserRole))
 			|| (CLIENT.equals(roleCreator))
-			|| (CLIENT.equals(newUserRole))
 			
 			// Admin can only create Owners
 			|| (ADMIN.equals(roleCreator) && !OWNER.equals(newUserRole))

@@ -1,5 +1,6 @@
 package com.foodcourt.users.domain.usecases;
 
+import com.foodcourt.users.domain.exception.InvalidRoleException;
 import com.foodcourt.users.domain.exception.InvalidUserException;
 import com.foodcourt.users.domain.gateways.EncryptServiceGateway;
 import com.foodcourt.users.domain.gateways.UserRepositoryGateway;
@@ -89,6 +90,77 @@ class CreateUserUseCaseTest {
 			.thenReturn(new User());
 		
 		assertThrows(InvalidUserException.class, () -> createUserUseCase.execute(userToCreate, UserRole.ADMIN));
+	}
+	
+	@Test
+	void shouldThrowExceptionWhenAnyoneTryToCreateAdmin() {
+		final UserRole role = UserRole.ADMIN;
+		User userToCreate = validUser();
+		userToCreate.setRole(role);
+
+		assertThrows(InvalidRoleException.class, () -> createUserUseCase.execute(userToCreate, UserRole.OWNER));
+	}
+	
+	@Test
+	void shouldThrowExceptionWhenCreateOwnerButNotAdmin() {
+		final UserRole role = UserRole.OWNER;
+		User userToCreate = validUser();
+		userToCreate.setRole(role);
+		
+		assertThrows(InvalidRoleException.class, () -> createUserUseCase.execute(userToCreate, UserRole.EMPLOYEE));
+	}
+	
+	@Test
+	void shouldThrowExceptionWhenCreateEmployeeButNotOwner() {
+		final UserRole role = UserRole.EMPLOYEE;
+		User userToCreate = validUser();
+		userToCreate.setRole(role);
+		
+		assertThrows(InvalidRoleException.class, () -> createUserUseCase.execute(userToCreate, UserRole.ADMIN));
+	}
+	
+	@Test
+	void shouldThrowExceptionWhenClientTryToCreateAnotherUser() {
+		final UserRole role = UserRole.EMPLOYEE;
+		User userToCreate = validUser();
+		userToCreate.setRole(role);
+		
+		assertThrows(InvalidRoleException.class, () -> createUserUseCase.execute(userToCreate, UserRole.CLIENT));
+	}
+	
+	@Test
+	void shouldThrowExceptionWhenNoRoleProvidedAndTryingToCreateNonClientUser() {
+		final UserRole role = UserRole.EMPLOYEE;
+		User userToCreate = validUser();
+		userToCreate.setRole(role);
+		
+		assertThrows(InvalidRoleException.class, () -> createUserUseCase.execute(userToCreate, null));
+	}
+	
+	@Test
+	void shouldCreateClientSuccessfullyWhenNoRoleProvided() {
+		final UserRole role = UserRole.CLIENT;
+		User userToCreate = validUser();
+		userToCreate.setRole(role);
+		String encryptedPassword = "encryptedPassword123";
+		User expectedUser = validUser();
+		expectedUser.setId(1L);
+		expectedUser.setPassword(encryptedPassword);
+		expectedUser.setRole(role);
+		
+		when(userRepositoryGateway.save(userToCreate)).thenReturn(expectedUser);
+		when(encryptServiceGateway.encrypt(anyString())).thenReturn(encryptedPassword);
+		
+		User userCreated = createUserUseCase.execute(userToCreate, null);
+		
+		assertEquals(expectedUser.getName(), userCreated.getName());
+		assertEquals(expectedUser.getLastname(), userCreated.getLastname());
+		assertEquals(expectedUser.getDocumentNumber(), userCreated.getDocumentNumber());
+		assertEquals(expectedUser.getPhoneNumber(), userCreated.getPhoneNumber());
+		assertEquals(expectedUser.getBirthdate(), userCreated.getBirthdate());
+		assertEquals(expectedUser.getEmail(), userCreated.getEmail());
+		assertEquals(expectedUser.getPassword(), userCreated.getPassword());
+		assertEquals(expectedUser.getRole(), userCreated.getRole());
 	}
 	
 	private User validUser() {

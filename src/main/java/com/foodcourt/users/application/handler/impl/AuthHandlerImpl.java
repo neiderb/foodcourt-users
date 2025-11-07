@@ -3,7 +3,7 @@ package com.foodcourt.users.application.handler.impl;
 import com.foodcourt.users.application.dto.request.LoginRequest;
 import com.foodcourt.users.application.handler.AuthHandler;
 import com.foodcourt.users.domain.ports.LoginPort;
-import com.foodcourt.users.infrastructure.rest.LoginResponse;
+import com.foodcourt.users.infrastructure.rest.dto.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

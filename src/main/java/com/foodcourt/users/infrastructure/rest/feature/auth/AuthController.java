@@ -1,7 +1,8 @@
-package com.foodcourt.users.infrastructure.rest;
+package com.foodcourt.users.infrastructure.rest.feature.auth;
 
 import com.foodcourt.users.application.dto.request.LoginRequest;
 import com.foodcourt.users.application.handler.AuthHandler;
+import com.foodcourt.users.infrastructure.rest.dto.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

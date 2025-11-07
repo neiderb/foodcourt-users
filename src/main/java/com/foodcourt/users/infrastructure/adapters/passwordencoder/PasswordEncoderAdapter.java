@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PasswordEncoderServiceGatewayImpl implements EncryptServiceGateway {
+public class PasswordEncoderAdapter implements EncryptServiceGateway {
 	
 	private final PasswordEncoder passwordEncoder;
 	
