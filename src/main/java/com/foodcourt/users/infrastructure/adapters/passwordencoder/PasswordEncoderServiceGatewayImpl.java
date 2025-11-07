@@ -1,13 +1,13 @@
 package com.foodcourt.users.infrastructure.adapters.passwordencoder;
 
-import com.foodcourt.users.domain.gateways.EncryptService;
+import com.foodcourt.users.domain.gateways.EncryptServiceGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PasswordEncoderServiceImpl implements EncryptService {
+public class PasswordEncoderServiceGatewayImpl implements EncryptServiceGateway {
 	
 	private final PasswordEncoder passwordEncoder;
 	

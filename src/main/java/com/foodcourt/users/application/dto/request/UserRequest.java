@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 import static com.foodcourt.users.domain.constants.Regex.JUST_NUMBERS;
 import static com.foodcourt.users.domain.constants.Regex.JUST_NUMBERS_AND_SYMBOL_PLUS;
-import static com.foodcourt.users.domain.constants.UserConstants.PHONE_NUMBER_MAX_LENGTH;
+import static com.foodcourt.users.domain.constants.UserRules.PHONE_NUMBER_MAX_LENGTH;
 import static com.foodcourt.users.domain.constants.ValidationMessage.*;
 
 public record UserRequest(

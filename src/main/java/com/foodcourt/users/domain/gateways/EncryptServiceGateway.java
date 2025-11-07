@@ -1,6 +1,6 @@
 package com.foodcourt.users.domain.gateways;
 
-public interface EncryptService {
+public interface EncryptServiceGateway {
 	
 	String encrypt(String value);
 	

@@ -1,7 +1,7 @@
 package com.foodcourt.users.domain.usecases;
 
 import com.foodcourt.users.domain.exception.InvalidUserException;
-import com.foodcourt.users.domain.gateways.EncryptService;
+import com.foodcourt.users.domain.gateways.EncryptServiceGateway;
 import com.foodcourt.users.domain.gateways.UserRepositoryGateway;
 import com.foodcourt.users.domain.model.User;
 import com.foodcourt.users.domain.model.UserRole;
@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
-import static com.foodcourt.users.domain.constants.UserConstants.LEGAL_AGE;
+import static com.foodcourt.users.domain.constants.UserRules.LEGAL_AGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,20 +29,23 @@ class CreateUserUseCaseTest {
 	private UserRepositoryGateway userRepositoryGateway;
 	
 	@Mock
-	private EncryptService encryptService;
+	private EncryptServiceGateway encryptServiceGateway;
 	
 	@Test
 	void shouldCreateUserSuccessfully() {
+		final UserRole role = UserRole.OWNER;
 		User userToCreate = validUser();
+		userToCreate.setRole(role);
 		String encryptedPassword = "encryptedPassword123";
 		User expectedUser = validUser();
 		expectedUser.setId(1L);
 		expectedUser.setPassword(encryptedPassword);
+		expectedUser.setRole(role);
 		
 		when(userRepositoryGateway.save(userToCreate)).thenReturn(expectedUser);
-		when(encryptService.encrypt(anyString())).thenReturn(encryptedPassword);
+		when(encryptServiceGateway.encrypt(anyString())).thenReturn(encryptedPassword);
 		
-		User userCreated = createUserUseCase.execute(userToCreate);
+		User userCreated = createUserUseCase.execute(userToCreate, UserRole.ADMIN);
 		
 		assertEquals(expectedUser.getName(), userCreated.getName());
 		assertEquals(expectedUser.getLastname(), userCreated.getLastname());
@@ -56,30 +59,36 @@ class CreateUserUseCaseTest {
 	
 	@Test
 	void shouldThrowExceptionWhenUserIsUnderage() {
+		final UserRole role = UserRole.OWNER;
 		User underageUser = validUser();
+		underageUser.setRole(role);
 		underageUser.setBirthdate(LocalDate.now().minusYears(LEGAL_AGE - 1));
 		
-		assertThrows(InvalidUserException.class, () -> createUserUseCase.execute(underageUser));
+		assertThrows(InvalidUserException.class, () -> createUserUseCase.execute(underageUser, UserRole.ADMIN));
 	}
 	
 	@Test
 	void shouldThrowExceptionWhenDocumentNumberAlreadyExists() {
+		final UserRole role = UserRole.OWNER;
 		User userToCreate = validUser();
+		userToCreate.setRole(role);
 		
 		when(userRepositoryGateway.findByDocumentNumber(userToCreate.getDocumentNumber()))
 			.thenReturn(new User());
 		
-		assertThrows(InvalidUserException.class, () -> createUserUseCase.execute(userToCreate));
+		assertThrows(InvalidUserException.class, () -> createUserUseCase.execute(userToCreate, UserRole.ADMIN));
 	}
 	
 	@Test
 	void shouldThrowExceptionWhenEmailAlreadyExists() {
+		final UserRole role = UserRole.OWNER;
 		User userToCreate = validUser();
+		userToCreate.setRole(role);
 		
 		when(userRepositoryGateway.findByEmail(userToCreate.getEmail()))
 			.thenReturn(new User());
 		
-		assertThrows(InvalidUserException.class, () -> createUserUseCase.execute(userToCreate));
+		assertThrows(InvalidUserException.class, () -> createUserUseCase.execute(userToCreate, UserRole.ADMIN));
 	}
 	
 	private User validUser() {
@@ -91,7 +100,6 @@ class CreateUserUseCaseTest {
 			.birthdate(LocalDate.parse("1990-01-01"))
 			.email("john.doe@mail.com")
 			.password("password123")
-			.role(UserRole.OWNER)
 			.build();
 	}
 	

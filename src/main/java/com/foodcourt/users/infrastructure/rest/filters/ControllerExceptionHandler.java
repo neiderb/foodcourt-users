@@ -18,13 +18,13 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
-import static com.foodcourt.users.domain.constants.ErrorMessage.GENERIC_ERROR;
+import static com.foodcourt.users.infrastructure.rest.constants.ErrorMessage.GENERIC_ERROR;
 import static com.foodcourt.users.infrastructure.rest.constants.ErrorMessage.NOT_FOUND;
 import static com.foodcourt.users.infrastructure.rest.docapi.GlobalDocApi.*;
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class ControllerExceptionHandler {
 	
 	
 	@ExceptionHandler(BusinessException.class)

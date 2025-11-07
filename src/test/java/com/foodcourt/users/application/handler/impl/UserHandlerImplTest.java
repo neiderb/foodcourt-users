@@ -42,11 +42,11 @@ class UserHandlerImplTest {
 	private static final String USER_ROLE = "owner";
 	
 	@Test
-	void shouldCreateUserSuccessfully() {
+	void shouldCreateUserOwnerSuccessfully() {
 		UserRequest userRequest = validUserRequest();
 		UserResponse expectedResponse = validUserResponse();
 		
-		when(createUserPort.execute(any(User.class))).thenAnswer(invocation -> {
+		when(createUserPort.execute(any(User.class), any(UserRole.class))).thenAnswer(invocation -> {
 			User userArg = invocation.getArgument(0);
 			userArg.setId(USER_ID);
 			return userArg;

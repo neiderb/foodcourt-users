@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: ms-users
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
 
 adapters:
   db:
@@ -28,3 +31,7 @@ management:
     web:
       exposure:
         include: health
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRES_IN}

@@ -5,10 +5,12 @@ import com.foodcourt.users.application.dto.response.UserResponse;
 import com.foodcourt.users.application.handler.UserHandler;
 import com.foodcourt.users.application.mappers.UserRequestMapper;
 import com.foodcourt.users.domain.model.User;
+import com.foodcourt.users.domain.model.UserClaims;
 import com.foodcourt.users.domain.model.UserRole;
 import com.foodcourt.users.domain.ports.CreateUserPort;
 import com.foodcourt.users.domain.ports.GetUserByIdPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,8 +24,13 @@ public class UserHandlerImpl implements UserHandler {
 	public UserResponse createUser(UserRequest userRequest) {
 		User userToSave = UserRequestMapper.INSTANCE.toDomain(userRequest);
 		userToSave.setRole(UserRole.getRoleof(userRequest.role()));
+		UserRole roleCreator = null;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserClaims userClaims) {
+			roleCreator = userClaims.role();
+		}
 		
-		User userSaved = createUserPort.execute(userToSave);
+		User userSaved = createUserPort.execute(userToSave, roleCreator);
 		
 		return new UserResponse(
 			userSaved.getId(),

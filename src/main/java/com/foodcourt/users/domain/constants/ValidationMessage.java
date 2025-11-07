@@ -2,7 +2,7 @@ package com.foodcourt.users.domain.constants;
 
 import lombok.experimental.UtilityClass;
 
-import static com.foodcourt.users.domain.constants.UserConstants.PHONE_NUMBER_MAX_LENGTH;
+import static com.foodcourt.users.domain.constants.UserRules.PHONE_NUMBER_MAX_LENGTH;
 
 @UtilityClass
 public class ValidationMessage {
