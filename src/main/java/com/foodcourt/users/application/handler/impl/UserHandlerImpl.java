@@ -24,13 +24,13 @@ public class UserHandlerImpl implements UserHandler {
 	public UserResponse createUser(UserRequest userRequest) {
 		User userToSave = UserRequestMapper.INSTANCE.toDomain(userRequest);
 		userToSave.setRole(UserRole.getRoleof(userRequest.role()));
-		UserRole roleCreator = null;
+		UserClaims creatorClaims = null;
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserClaims userClaims) {
-			roleCreator = userClaims.role();
+			creatorClaims = userClaims;
 		}
 		
-		User userSaved = createUserPort.execute(userToSave, roleCreator);
+		User userSaved = createUserPort.execute(userToSave, creatorClaims);
 		
 		return new UserResponse(
 			userSaved.getId(),

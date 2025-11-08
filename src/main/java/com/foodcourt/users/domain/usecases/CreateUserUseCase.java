@@ -2,9 +2,12 @@ package com.foodcourt.users.domain.usecases;
 
 import com.foodcourt.users.domain.exception.InvalidRoleException;
 import com.foodcourt.users.domain.exception.InvalidUserException;
+import com.foodcourt.users.domain.exception.UserIsNotOwnerRestaurantException;
 import com.foodcourt.users.domain.gateways.EncryptServiceGateway;
+import com.foodcourt.users.domain.gateways.RestaurantServiceGateway;
 import com.foodcourt.users.domain.gateways.UserRepositoryGateway;
 import com.foodcourt.users.domain.model.User;
+import com.foodcourt.users.domain.model.UserClaims;
 import com.foodcourt.users.domain.model.UserRole;
 import com.foodcourt.users.domain.ports.CreateUserPort;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 
 import static com.foodcourt.users.domain.constants.ErrorMessage.*;
 import static com.foodcourt.users.domain.constants.UserRules.LEGAL_AGE;
+import static com.foodcourt.users.domain.constants.ValidationMessage.EMPLOYEE_NEEDS_TO_BELONG_TO_SAME_RESTAURANT_AS_OWNER;
 import static com.foodcourt.users.domain.constants.ValidationMessage.USER_MUST_BE_OF_LEGAL_AGE;
 import static com.foodcourt.users.domain.model.UserRole.*;
 import static java.util.Objects.isNull;
@@ -24,20 +28,28 @@ public class CreateUserUseCase implements CreateUserPort {
 	
 	private final UserRepositoryGateway userRepositoryGateway;
 	private final EncryptServiceGateway encryptServiceGateway;
+	private final RestaurantServiceGateway restaurantServiceGateway;
 	
 	@Override
-	public User execute(User userToCreate, UserRole roleCreator) {
-		validateAuthorization(userToCreate, roleCreator);
+	public User execute(User userToCreate, UserClaims creatorClaims) {
+		validateAuthorization(userToCreate, creatorClaims);
 		validateAge(userToCreate.getBirthdate());
 		validateUniqueDocumentNumber(userToCreate.getDocumentNumber());
 		validateUniqueEmail(userToCreate.getEmail());
+		
+		if (userToCreate.isEmployee()) {
+			validateEmployee(userToCreate, creatorClaims);
+		} else {
+			userToCreate.setIdRestaurant(null);
+		}
 		
 		userToCreate.setPassword(encryptPassword(userToCreate.getPassword()));
 		
 		return userRepositoryGateway.save(userToCreate);
 	}
 	
-	private void validateAuthorization(User userToCreate, UserRole roleCreator) {
+	private void validateAuthorization(User userToCreate, UserClaims creatorClaims) {
+		UserRole roleCreator = isNull(creatorClaims) ? null : creatorClaims.role();
 		UserRole newUserRole = userToCreate.getRole();
 		
 		boolean isForbiddenAction =
@@ -82,6 +94,13 @@ public class CreateUserUseCase implements CreateUserPort {
 	
 	private String encryptPassword(String password) {
 		return encryptServiceGateway.encrypt(password);
+	}
+	
+	private void validateEmployee(User user, UserClaims creatorClaims) {
+		user.validateRestaurantAssociation();
+		if (!restaurantServiceGateway.isRestaurantOwner(user.getIdRestaurant(), creatorClaims.id())) {
+			throw new UserIsNotOwnerRestaurantException(EMPLOYEE_NEEDS_TO_BELONG_TO_SAME_RESTAURANT_AS_OWNER);
+		}
 	}
 	
 }

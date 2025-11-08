@@ -72,6 +72,7 @@ jacocoTestReport {
                     'com/foodcourt/users/infrastructure/config/**',
                     'com/foodcourt/users/infrastructure/adapters/passwordencoder/config/**',
                     'com/foodcourt/users/infrastructure/adapters/persistence/config/**',
+                    'com/foodcourt/users/infrastructure/adapters/restaurant/config/**',
                     'com/foodcourt/users/infrastructure/rest/config/**',
                     'com/foodcourt/users/infrastructure/rest/docapi/**',
                     '**/*$*.*',

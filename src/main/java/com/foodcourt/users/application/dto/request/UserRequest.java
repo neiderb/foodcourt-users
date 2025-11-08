@@ -44,6 +44,8 @@ public record UserRequest(
 	
 	@NotNull(message = ROLE_REQUIRED)
 	@NotBlank(message = ROLE_REQUIRED)
-	String role
+	String role,
+	
+	Long idRestaurant
 	
 ) {}

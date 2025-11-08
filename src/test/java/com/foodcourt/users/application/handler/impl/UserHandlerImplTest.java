@@ -52,7 +52,7 @@ class UserHandlerImplTest {
 		UserRequest userRequest = validUserRequest();
 		UserResponse expectedResponse = validUserResponse();
 		
-		when(createUserPort.execute(any(User.class), any(UserRole.class))).thenAnswer(invocation -> {
+		when(createUserPort.execute(any(User.class), any(UserClaims.class))).thenAnswer(invocation -> {
 			User userArg = invocation.getArgument(0);
 			userArg.setId(USER_ID);
 			return userArg;
@@ -76,7 +76,8 @@ class UserHandlerImplTest {
 			USER_BIRTHDATE,
 			USER_EMAIL,
 			USER_PASSWORD,
-			"invalid_role"
+			"invalid_role",
+			null
 		);
 		
 		assertThrows(InvalidRoleException.class, () -> userHandlerImpl.createUser(userRequest));
@@ -116,7 +117,8 @@ class UserHandlerImplTest {
 			USER_BIRTHDATE,
 			USER_EMAIL,
 			USER_PASSWORD,
-			USER_ROLE
+			USER_ROLE,
+			null
 		);
 	}
 	

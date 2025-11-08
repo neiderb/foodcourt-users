@@ -1,6 +1,7 @@
 package com.foodcourt.users.infrastructure.config;
 
 import com.foodcourt.users.domain.gateways.EncryptServiceGateway;
+import com.foodcourt.users.domain.gateways.RestaurantServiceGateway;
 import com.foodcourt.users.domain.gateways.TokenServiceGateway;
 import com.foodcourt.users.domain.gateways.UserRepositoryGateway;
 import com.foodcourt.users.domain.ports.CreateUserPort;
@@ -18,10 +19,15 @@ import org.springframework.context.annotation.Configuration;
 public class UserBeanConfig {
 	
 	@Bean
-	public CreateUserPort createUserPort(UserRepositoryGateway userRepositoryGateway, EncryptServiceGateway encryptServiceGateway) {
+	public CreateUserPort createUserPort(
+		UserRepositoryGateway userRepositoryGateway,
+		EncryptServiceGateway encryptServiceGateway,
+		RestaurantServiceGateway restaurantServiceGateway
+	) {
 		return new CreateUserUseCase(
 			userRepositoryGateway,
-			encryptServiceGateway
+			encryptServiceGateway,
+			restaurantServiceGateway
 		);
 	}
 	

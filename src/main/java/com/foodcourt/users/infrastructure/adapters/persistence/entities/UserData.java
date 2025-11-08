@@ -44,4 +44,7 @@ public class UserData {
     @JoinColumn(name = "id_role")
     private RoleData role;
     
+    @Column(name = "id_restaurant")
+    private Long idRestaurant;
+    
 }

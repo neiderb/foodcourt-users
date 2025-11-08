@@ -43,11 +43,14 @@ class UserRepositoryAdapterTest {
 	
 	@Test
 	void shouldSaveUserSuccessfully() {
+		final Long idRestaurant = 10L;
 		User userToSave = validUser();
 		userToSave.setRole(USER_ROLE);
+		userToSave.setIdRestaurant(idRestaurant);
 		RoleData roleData = validRoleOwnerData();
 		UserData testUserData = validUserData();
 		testUserData.setRole(roleData);
+		testUserData.setIdRestaurant(idRestaurant);
 		
 		when(roleJpaRepository.findByName(userToSave.getRole().name())).thenReturn(roleData);
 		when(userJpaRepository.save(any(UserData.class))).thenReturn(testUserData);
@@ -64,6 +67,7 @@ class UserRepositoryAdapterTest {
 		assertEquals(USER_EMAIL, savedUser.getEmail());
 		assertEquals(USER_PASSWORD, savedUser.getPassword());
 		assertEquals(userToSave.getRole(), savedUser.getRole());
+		assertEquals(idRestaurant, savedUser.getIdRestaurant());
 		
 		verify(roleJpaRepository, times(1)).findByName(userToSave.getRole().name());
 	}

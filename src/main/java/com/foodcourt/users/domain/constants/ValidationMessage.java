@@ -22,5 +22,7 @@ public class ValidationMessage {
 	public static final String DOCUMENT_NUMBER_JUST_NUMBERS = "Document number must contain just numbers";
 	public static final String USER_MUST_BE_OF_LEGAL_AGE = "User must be of legal age";
 	public static final String PAST_DATE_REQUIRED = "Birthdate must be a past date";
+	public static final String RESTAURANT_ID_REQUIRED_FOR_EMPLOYEE = "Restaurant ID is required for employee role";
+	public static final String EMPLOYEE_NEEDS_TO_BELONG_TO_SAME_RESTAURANT_AS_OWNER = "Employee must belong to the same restaurant as the owner creating them";
 	
 }

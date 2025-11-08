@@ -35,3 +35,7 @@ management:
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRES_IN}
+
+external-api:
+   restaurant-service:
+     url: ${RESTAURANT_API_URL}
