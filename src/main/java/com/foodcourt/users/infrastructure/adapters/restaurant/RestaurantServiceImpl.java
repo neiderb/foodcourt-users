@@ -41,6 +41,7 @@ public class RestaurantServiceImpl implements RestaurantServiceGateway {
 	
 	@Override
 	public boolean isRestaurantOwner(Long idRestaurant, Long idUser) {
+		log.trace("Checking if user with ID {} is owner of restaurant with ID {}", idUser, idRestaurant);
 		RestaurantExternalResponse restaurant = getRestaurantById(idRestaurant);
 		if (isNull(restaurant)) throw new RestaurantNotFoundException(RESTAURANT_NOT_FOUND);
 		return restaurant.ownerId().equals(idUser);
@@ -53,10 +54,13 @@ public class RestaurantServiceImpl implements RestaurantServiceGateway {
 			.retrieve()
 			.onStatus(
 				HttpStatusCode::is4xxClientError, (req, res) -> {
+					log.warn("Received 4xx error when fetching restaurant with ID {}: {}", idRestaurant, res.getStatusCode());
 					ErrorExternalResponse error = mapErrorResponse(res);
+					log.warn("Mapped error response: {}", error);
 					throw new BusinessException(error.message());
 				})
 			.onStatus(HttpStatusCode::isError, (req, res) -> {
+				log.error("Received error response when fetching restaurant with ID {}: {}", idRestaurant, res.getStatusCode());
 				throw new TechnicalException(EXTERNAL_SERVICE_ERROR);
 			})
 			.body(RestaurantExternalResponse.class);

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import static com.foodcourt.users.infrastructure.rest.constants.paths.UserPath.B
 import static com.foodcourt.users.infrastructure.rest.constants.paths.UserPath.FIND_BY_ID;
 import static com.foodcourt.users.infrastructure.rest.docapi.UserDocApi.*;
 
+@Slf4j
 @Tag(name = TAG_USER)
 @RestController
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class UserController {
 	)
 	@PostMapping
 	ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest) {
+		log.trace("createUser called with emai: {}", userRequest.email());
 		return ResponseEntity.status(HttpStatus.CREATED).body(userHandler.createUser(userRequest));
 	}
 	
@@ -56,6 +59,7 @@ public class UserController {
 	)
 	@GetMapping(FIND_BY_ID)
 	ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+		log.trace("getUserById called with id: {}", id);
 		return ResponseEntity.ok(userHandler.getUserById(id));
 	}
 	
