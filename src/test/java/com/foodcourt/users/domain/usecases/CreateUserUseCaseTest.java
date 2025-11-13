@@ -222,7 +222,8 @@ class CreateUserUseCaseTest {
 		return new UserClaims(
 			50L,
 			"user.creator@mail.com",
-			role
+			role,
+			null
 		);
 	}
 	

@@ -17,8 +17,7 @@ import java.security.Key;
 import java.util.Date;
 
 import static com.foodcourt.users.domain.constants.ErrorMessage.INVALID_TOKEN;
-import static com.foodcourt.users.domain.model.AuthClaim.ROLE;
-import static com.foodcourt.users.domain.model.AuthClaim.USER_ID;
+import static com.foodcourt.users.domain.model.AuthClaim.*;
 
 @Service
 public class JwtAdapter implements TokenServiceGateway {
@@ -43,6 +42,7 @@ public class JwtAdapter implements TokenServiceGateway {
 			.setSubject(user.getEmail())
 			.claim(USER_ID.value, user.getId())
 			.claim(ROLE.value, user.getRole().name())
+			.claim(RESTAURANT_ID.value, user.getIdRestaurant())
 			.setIssuedAt(now)
 			.setExpiration(expiryDate)
 			.signWith(key, SignatureAlgorithm.HS256)
@@ -56,7 +56,8 @@ public class JwtAdapter implements TokenServiceGateway {
 			return new UserClaims(
 				claims.get(USER_ID.value, Long.class),
 				claims.getSubject(),
-				UserRole.getRoleof(claims.get(ROLE.value, String.class))
+				UserRole.getRoleof(claims.get(ROLE.value, String.class)),
+				claims.get(RESTAURANT_ID.value, Long.class)
 			);
 		} catch (Exception e) {
 			throw new InvalidTokenException(INVALID_TOKEN);

@@ -37,6 +37,7 @@ class UserHandlerImplTest {
 	private GetUserByIdPort getUserByIdPort;
 	
 	private static final Long USER_ID = 1L;
+	private static final Long RESTAURANT_ID = 100L;
 	private static final String USER_NAME = "John";
 	private static final String USER_LASTNAME = "Doe";
 	private static final String USER_DOCUMENT_NUMBER = "123456789";
@@ -134,7 +135,8 @@ class UserHandlerImplTest {
 		UserClaims userClaims = new UserClaims(
 			USER_ID,
 			USER_EMAIL,
-			UserRole.OWNER
+			UserRole.OWNER,
+			RESTAURANT_ID
 		);
 		Authentication authentication = mock(Authentication.class);
 		when(authentication.getPrincipal()).thenReturn(userClaims);
