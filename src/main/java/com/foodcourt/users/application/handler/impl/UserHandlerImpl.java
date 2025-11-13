@@ -4,6 +4,7 @@ import com.foodcourt.users.application.dto.request.UserRequest;
 import com.foodcourt.users.application.dto.response.UserResponse;
 import com.foodcourt.users.application.handler.UserHandler;
 import com.foodcourt.users.application.mappers.UserRequestMapper;
+import com.foodcourt.users.application.mappers.UserResponseMapper;
 import com.foodcourt.users.domain.model.User;
 import com.foodcourt.users.domain.model.UserClaims;
 import com.foodcourt.users.domain.model.UserRole;
@@ -37,11 +38,7 @@ public class UserHandlerImpl implements UserHandler {
 		User userSaved = createUserPort.execute(userToSave, creatorClaims);
 		
 		log.debug("Created user with ID: {}", userSaved.getId());
-		return new UserResponse(
-			userSaved.getId(),
-			userSaved.getEmail(),
-			userRequest.role().toLowerCase()
-		);
+		return UserResponseMapper.INSTANCE.toResponse(userSaved);
 	}
 	
 	@Override
@@ -50,10 +47,6 @@ public class UserHandlerImpl implements UserHandler {
 		User user = getUserByIdPort.execute(id);
 		
 		log.debug("Found user with ID: {}", user.getId());
-		return new UserResponse(
-			user.getId(),
-			user.getEmail(),
-			user.getRole().name().toLowerCase()
-		);
+		return UserResponseMapper.INSTANCE.toResponse(user);
 	}
 }
